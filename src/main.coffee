@@ -55,6 +55,13 @@ class @Tabulator extends Common_mixin()
     return key
 
   #---------------------------------------------------------------------------------------------------------
+  _raw_value_and_value_from_cfg_row_field_and_key: ( cfg, row, field, key ) ->
+    raw_value   = row[ key ]
+    value       = raw_value
+    value       = field?.undefined ? cfg.undefined ? 'undefined' if value is undefined
+    return { raw_value, value, }
+
+  #---------------------------------------------------------------------------------------------------------
   _table_as_html: ( cfg ) ->
     { rows }      = cfg
     fields        = @_fields_from_cfg cfg
@@ -89,9 +96,8 @@ class @Tabulator extends Common_mixin()
         field       = fields[ key ] ? null
         continue unless ( title = @_title_from_field_and_key )?
         #...................................................................................................
-        raw_value   = row[ key ]
-        value       = raw_value
-        value       = field?.undefined ? cfg.undefined ? 'undefined' if value is undefined
+        { raw_value
+          value }   = @_raw_value_and_value_from_cfg_row_field_and_key cfg, row, field, key
         is_done     = false
         inner_html  = null
         if field?
@@ -128,12 +134,11 @@ class @Tabulator extends Common_mixin()
     for key in keys
       field = fields[ key ]
       continue unless ( title = @_title_from_field_and_key field, key )?
+      { raw_value
+        value }   = @_raw_value_and_value_from_cfg_row_field_and_key cfg, row, field, key
       #.....................................................................................................
       value = row[ key ]
-      R.push HDML.open 'tr'
-      R.push HDML.pair 'th', HDML.text key
-      R.push HDML.pair 'td', HDML.text value
-      R.push HDML.close 'tr'
+      R.push HDML.pair 'tr', ( HDML.pair 'th', HDML.text key ) + ( HDML.pair 'td', HDML.text value )
     R.push HDML.close 'table'
     return R.join '\n'
 
