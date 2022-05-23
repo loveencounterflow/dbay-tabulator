@@ -19,6 +19,6 @@
 
 ## To Do
 
-* **[—]** write docs
+* **[–]** write docs
 
 ## Is Done

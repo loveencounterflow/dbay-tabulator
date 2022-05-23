@@ -16,8 +16,9 @@ help                      = CND.get_logger 'help',      badge
 urge                      = CND.get_logger 'urge',      badge
 info                      = CND.get_logger 'info',      badge
 jr                        = JSON.stringify
-Intertype                 = ( require 'intertype' ).Intertype
-intertype                 = new Intertype module.exports
+GUY                       = require 'guy'
+@types                    = new ( require 'intertype' ).Intertype()
+@defaults                 = {}
 
 
 

@@ -16,18 +16,14 @@ echo                      = CND.echo.bind CND
 #...........................................................................................................
 # PATH                      = require 'path'
 GUY                       = require 'guy'
-# { HTMLISH: ITXH }         = require 'intertext'
-# URL                       = require 'url'
-# { Html }                  = require './html'
-{ DBay }                  = require 'dbay'
-{ SQL }                   = DBay
-{ HDML, }                 = require 'hdml'
-
+{ SQL }                   = GUY.str
+{ HDML }                  = require 'hdml'
+{ Common_mixin }          = require './common-mixin'
 
 
 
 #===========================================================================================================
-@DBay_html = ( clasz = Object ) => class extends clasz
+class @Tabulator extends Common_mixin()
 
   #---------------------------------------------------------------------------------------------------------
   as_html: ( cfg ) ->
