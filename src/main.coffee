@@ -28,8 +28,8 @@ class @Tabulator extends Common_mixin()
   #---------------------------------------------------------------------------------------------------------
   as_html: ( cfg ) ->
     ### TAINT iterate or use stream ###
-    cfg         = { @defaults.vogue_db_as_html_cfg..., cfg..., }
-    @types.validate.vogue_db_as_html_cfg cfg
+    cfg         = { @defaults.vgt_as_html_cfg..., cfg..., }
+    @types.validate.vgt_as_html_cfg cfg
     if cfg.table?
       table_i   = @db.sql.I cfg.table
       cfg.rows  = @db SQL"""select * from #{table_i};"""
@@ -52,7 +52,7 @@ class @Tabulator extends Common_mixin()
     #   if value is true then fields[ key ] = {}
     for key, value of fields
       value         = {} if value is true
-      fields[ key ] = { @defaults.vogue_db_field_description_object..., value..., }
+      fields[ key ] = { @defaults.vgt_field_description_object..., value..., }
     keys          = null
     R             = []
     row_nr        = 0
