@@ -20,27 +20,29 @@
 
 ## API Notes
 
-* `db.as_html: ( cfg ) ->`:
-  * `cfg`:
-    * `nonempty_text x.table`
-    * `optional.vogue_db_fieldset_cfg x.fields`
-      * ma be either `true` (means display this column) or a descriptive `object`:
-        * type is a `vogue_db_field_description_object`
-        * `optional.boolean x.display`: if set to `false`, inhibits column from being displayed and any of
-          `value()`, `outer_html()`, `inner_html()` to be called
-        * `optional.text x.title`: when given, defines the text to be used in the table header
-        * `optional.function x.value`: when given, must be function that accepts a value (and optionally a
-          field description object) and returns another. Returned value will be stringified with
-          `node:util.inspect()` unless it already is a string.
-        * `optional.function x.outer_html`: when given, must be a function that accepts a value (and
-          optionally a field description object) and returns an HTML representation of it *including the
-          containing `<td>` element*
-        * `optional.function x.inner_html`: when given, must be a function that accepts a value (and
-          optionally a field description object) and returns an HTML representation of it *including the
-          containing `<td>` element*
-        * `optional.function x.attrs`: when given, must be a function that accepts a value (and
-          optionally a field description object) and returns an object that will be used for
-          the attributes of the enclosing (`<td>`) element
+* `{ Tabulator } = require 'dbay-tabulator'`
+* `tabulator = new Tabulator()`
+* `tabulator.as_html: ( cfg ) ->`: returns a string with data rendered according to the settings `cfg`
+* Data is passed in as the `rows` property; this can be a list of or an iterator over objects.
+* Optionally, individual fields may be formatted using the `fields` property, which should be and object
+  whose keys are field names and whose values are either `true` (to indicate, 'include this field' even if
+  not present in the data, or to clarify the ordering of fields in the table).
+* if `fields[ key ]` is an object:
+  * `optional.text x.title`: when given, defines the text to be used in the table header
+  * `optional.function x.value`: when given, must be function that accepts a value (and optionally a
+    field description object) and returns another. Returned value will be stringified with
+    `node:util.inspect()` unless it already is a string.
+  * `optional.function x.outer_html`: when given, must be a function that accepts a value (and
+    optionally a field description object) and returns an HTML representation of it *including the
+    containing `<td>` element*
+  * `optional.function x.inner_html`: when given, must be a function that accepts a value (and
+    optionally a field description object) and returns an HTML representation of it *including the
+    containing `<td>` element*
+  * `optional.function x.attrs`: when given, must be a function that accepts a value (and
+    optionally a field description object) and returns an object that will be used for
+    the attributes of the enclosing (`<td>`) element
+  * `optional.boolean x.display`: if set to `false`, inhibits column from being displayed and any of
+    `value()`, `outer_html()`, `inner_html()` to be called
 
 * Configuration options may be modified in the future to make it simpler to add ID, CSS class,
   `data-` and other attributes to the enclosing element without having to touch the value or to generate the
