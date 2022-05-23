@@ -53,18 +53,16 @@ GUY                       = require 'guy'
   "@isa_optional.object x.parameters":                  ( x ) -> @isa_optional.object x.parameters
   "@isa_optional.notunset x.undefined":                 ( x ) -> @isa_optional.notunset x.undefined
   "must give one of table, (query, ?parameters), rows": ( x ) ->
-    count = 0
-    count++ if @isa._vogue_db_as_html_from_table_cfg  x
-    count++ if @isa._vogue_db_as_html_from_query_cfg  x
-    count++ if @isa._vogue_db_as_html_from_rows_cfg   x
-    return count is 1
+    return false if @isa._vogue_db_as_html_from_table_cfg  x
+    return false if @isa._vogue_db_as_html_from_query_cfg  x
+    return @isa._vogue_db_as_html_from_rows_cfg   x
 #...........................................................................................................
 @defaults.vogue_db_as_html_cfg =
   table:            null
   query:            null
   rows:             null
   undefined:        undefined
-  class:            'vogue'
+  class:            null
   keys:             'row,cfg'
   fields:           GUY.lft.freeze {}
 
