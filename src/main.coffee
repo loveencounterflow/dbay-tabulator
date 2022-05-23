@@ -32,15 +32,32 @@ class @Tabulator extends Common_mixin()
     return @_table_as_html cfg
 
   #---------------------------------------------------------------------------------------------------------
+  _fields_from_cfg: ( cfg ) ->
+    R = { cfg.fields..., }
+    for key, value of R
+      value     = {} if value is true
+      R[ key ]  = { @defaults.vgt_field_description_object..., value..., }
+    return R
+
+  #---------------------------------------------------------------------------------------------------------
+  _keys_from_keys_row_and_fields: ( keys, row, fields ) ->
+    return Object.keys switch keys
+      when 'row,cfg'  then { row..., fields..., }
+      when 'cfg,row'  then { fields..., row..., }
+      when 'row'      then row
+      when 'cfg'      then fields
+
+  #---------------------------------------------------------------------------------------------------------
+  _title_from_field_and_key: ( field, key ) ->
+    if field?
+      return null if field.display is false
+      return field.title ? key
+    return key
+
+  #---------------------------------------------------------------------------------------------------------
   _table_as_html: ( cfg ) ->
-    { rows
-      fields  }   = cfg
-    fields        = { fields..., }
-    # for key, value of fields
-    #   if value is true then fields[ key ] = {}
-    for key, value of fields
-      value         = {} if value is true
-      fields[ key ] = { @defaults.vgt_field_description_object..., value..., }
+    { rows }      = cfg
+    fields        = @_fields_from_cfg cfg
     keys          = null
     R             = []
     row_nr        = 0
@@ -48,11 +65,7 @@ class @Tabulator extends Common_mixin()
     #.......................................................................................................
     push_table_headers = ( row = null ) =>
       has_ths = true
-      keys = Object.keys switch cfg.keys
-        when 'row,cfg'  then { row..., fields..., }
-        when 'cfg,row'  then { fields..., row..., }
-        when 'row'      then row
-        when 'cfg'      then fields
+      keys    = @_keys_from_keys_row_and_fields cfg.keys, row, fields
       return if keys.length is 0
       R.push HDML.open 'tr'
       for key in keys
@@ -73,14 +86,15 @@ class @Tabulator extends Common_mixin()
       #.....................................................................................................
       R.push HDML.open 'tr'
       for key in keys
+        field       = fields[ key ] ? null
+        continue unless ( title = @_title_from_field_and_key )?
+        #...................................................................................................
         raw_value   = row[ key ]
         value       = raw_value
-        field       = fields[ key ] ? null
         value       = field?.undefined ? cfg.undefined ? 'undefined' if value is undefined
         is_done     = false
         inner_html  = null
         if field?
-          continue if field.display is false
           details = { key, raw_value, row_nr, row, }
           if field.value?
             value = field.value value, details
@@ -104,15 +118,21 @@ class @Tabulator extends Common_mixin()
 
   #---------------------------------------------------------------------------------------------------------
   row_as_subtable_html: ( cfg ) ->
-    cfg = { @defaults.vgt_row_as_subtable_html_cfg..., cfg..., }
+    cfg     = { @defaults.vgt_row_as_subtable_html_cfg..., cfg..., }
     @types.validate.vgt_row_as_subtable_html_cfg cfg
-    row = if ( @types.isa.object cfg.row ) then cfg.row else JSON.parse cfg.row
-    R   = []
+    row     = if ( @types.isa.object cfg.row ) then cfg.row else JSON.parse cfg.row
+    fields  = @_fields_from_cfg cfg
+    keys    = @_keys_from_keys_row_and_fields cfg.keys, row, fields
+    R       = []
     R.push HDML.open 'table', if cfg.class? then { class: cfg.class, } else null
-    for k, v of row
+    for key in keys
+      field = fields[ key ]
+      continue unless ( title = @_title_from_field_and_key field, key )?
+      #.....................................................................................................
+      value = row[ key ]
       R.push HDML.open 'tr'
-      R.push HDML.pair 'th', HDML.text k
-      R.push HDML.pair 'td', HDML.text v
+      R.push HDML.pair 'th', HDML.text key
+      R.push HDML.pair 'td', HDML.text value
       R.push HDML.close 'tr'
     R.push HDML.close 'table'
     return R.join '\n'
