@@ -27,24 +27,12 @@ class @Tabulator extends Common_mixin()
 
   #---------------------------------------------------------------------------------------------------------
   as_html: ( cfg ) ->
-    ### TAINT iterate or use stream ###
     cfg         = { @defaults.vgt_as_html_cfg..., cfg..., }
     @types.validate.vgt_as_html_cfg cfg
-    if cfg.table?
-      table_i   = @db.sql.I cfg.table
-      cfg.rows  = @db SQL"""select * from #{table_i};"""
-    else if cfg.query?
-      cfg.rows  = @db cfg.query, cfg.parameters ? {}
-    else if cfg.rows?
-      null
     return @_table_as_html cfg
-    # try return @_table_as_html cfg catch error then null
-    # return error.message
 
   #---------------------------------------------------------------------------------------------------------
   _table_as_html: ( cfg ) ->
-    ### TAINT move this to DBay ###
-    ### TAINT use SQL generation facility from DBay (TBW) ###
     { rows
       fields  }   = cfg
     fields        = { fields..., }
