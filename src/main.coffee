@@ -55,10 +55,12 @@ class @Tabulator extends Common_mixin()
     return key
 
   #---------------------------------------------------------------------------------------------------------
-  _raw_value_and_value_from_cfg_row_field_and_key: ( cfg, row, field, key ) ->
-    raw_value   = row[ key ]
-    value       = raw_value
-    value       = field?.undefined ? cfg.undefined ? 'undefined' if value is undefined
+  _raw_value_and_value_from_cfg_row_field_and_key: ( cfg, row, field, key, details ) ->
+    raw_value         = row[ key ]
+    details.raw_value = raw_value
+    value             = raw_value
+    value             = field?.undefined ? cfg.undefined ? 'undefined'  if value is undefined
+    value             = field.value value, details                      if field?.value?
     return { raw_value, value, }
 
   #---------------------------------------------------------------------------------------------------------
@@ -96,14 +98,12 @@ class @Tabulator extends Common_mixin()
         field       = fields[ key ] ? null
         continue unless ( title = @_title_from_field_and_key )?
         #...................................................................................................
+        details     = { key, row_nr, row, }
         { raw_value
-          value }   = @_raw_value_and_value_from_cfg_row_field_and_key cfg, row, field, key
+          value }   = @_raw_value_and_value_from_cfg_row_field_and_key cfg, row, field, key, details
         is_done     = false
         inner_html  = null
         if field?
-          details = { key, raw_value, row_nr, row, }
-          if field.value?
-            value = field.value value, details
           if ( as_html = field.outer_html ? null )?
             is_done = true
             R.push as_html value, details
@@ -134,8 +134,9 @@ class @Tabulator extends Common_mixin()
     for key in keys
       field = fields[ key ]
       continue unless ( title = @_title_from_field_and_key field, key )?
+      details     = { key, row, }
       { raw_value
-        value }   = @_raw_value_and_value_from_cfg_row_field_and_key cfg, row, field, key
+        value }   = @_raw_value_and_value_from_cfg_row_field_and_key cfg, row, field, key, details
       #.....................................................................................................
       value = row[ key ]
       R.push HDML.pair 'tr', ( HDML.pair 'th', HDML.text key ) + ( HDML.pair 'td', HDML.text value )
