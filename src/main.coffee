@@ -27,59 +27,14 @@ class @Tabulator extends Common_mixin()
 
   #---------------------------------------------------------------------------------------------------------
   as_html: ( cfg ) ->
-    cfg         = { @defaults.vgt_as_html_cfg..., cfg..., }
+    cfg       = { @defaults.vgt_as_html_cfg..., cfg..., }
     @types.validate.vgt_as_html_cfg cfg
-    return @_table_as_html cfg
-
-  #---------------------------------------------------------------------------------------------------------
-  _fields_from_cfg: ( cfg ) ->
-    R = { cfg.fields..., }
-    for key, value of R
-      value     = {} if value is true
-      R[ key ]  = { @defaults.vgt_field_description_object..., value..., }
-    return R
-
-  #---------------------------------------------------------------------------------------------------------
-  _keys_from_keys_row_and_fields: ( keys, row, fields ) ->
-    return Object.keys switch keys
-      when 'row,cfg'  then { row..., fields..., }
-      when 'cfg,row'  then { fields..., row..., }
-      when 'row'      then row
-      when 'cfg'      then fields
-
-  #---------------------------------------------------------------------------------------------------------
-  _title_from_field_and_key: ( field, key ) ->
-    if field?
-      return null if field.display is false
-      return field.title ? key
-    return key
-
-  #---------------------------------------------------------------------------------------------------------
-  _raw_value_and_value_from_cfg_row_field_and_key: ( cfg, row, field, key, details ) ->
-    raw_value         = row[ key ]
-    details.raw_value = raw_value
-    value             = raw_value
-    value             = field?.undefined ? cfg.undefined  if value is undefined
-    value             = field.value value, details        if field?.value?
-    return { raw_value, value, }
-
-  #---------------------------------------------------------------------------------------------------------
-  _td_from_field_key_value_and_details: ( field, key, value, details ) ->
-    if field?.outer_html?
-      return field.outer_html value, details
-    else if field?.inner_html?
-      return HDML.pair 'td', { class: key, }, field.inner_html value, details
-    value = rpr value unless @types.isa.text value
-    return HDML.pair 'td', { class: key, }, HDML.text value
-
-  #---------------------------------------------------------------------------------------------------------
-  _table_as_html: ( cfg ) ->
-    { rows }      = cfg
-    fields        = @_fields_from_cfg cfg
-    keys          = null
-    R             = []
-    row_nr        = 0
-    has_ths       = false
+    { rows }  = cfg
+    fields    = @_fields_from_cfg cfg
+    keys      = null
+    R         = []
+    row_nr    = 0
+    has_ths   = false
     #.......................................................................................................
     push_table_headers = ( row = null ) =>
       has_ths = true
@@ -140,12 +95,45 @@ class @Tabulator extends Common_mixin()
     R.push HDML.close 'table'
     return R.join '\n'
 
+  #---------------------------------------------------------------------------------------------------------
+  _fields_from_cfg: ( cfg ) ->
+    R = { cfg.fields..., }
+    for key, value of R
+      value     = {} if value is true
+      R[ key ]  = { @defaults.vgt_field_description_object..., value..., }
+    return R
 
   #---------------------------------------------------------------------------------------------------------
-  _get_table_name: ( name ) ->
-    @types.validate.nonempty_text name
-    return "_#{@cfg.prefix}_#{name[1..]}" if name.startsWith '_'
-    return "#{@cfg.prefix}_#{name}"
+  _keys_from_keys_row_and_fields: ( keys, row, fields ) ->
+    return Object.keys switch keys
+      when 'row,cfg'  then { row..., fields..., }
+      when 'cfg,row'  then { fields..., row..., }
+      when 'row'      then row
+      when 'cfg'      then fields
 
+  #---------------------------------------------------------------------------------------------------------
+  _title_from_field_and_key: ( field, key ) ->
+    if field?
+      return null if field.display is false
+      return field.title ? key
+    return key
+
+  #---------------------------------------------------------------------------------------------------------
+  _raw_value_and_value_from_cfg_row_field_and_key: ( cfg, row, field, key, details ) ->
+    raw_value         = row[ key ]
+    details.raw_value = raw_value
+    value             = raw_value
+    value             = field?.undefined ? cfg.undefined  if value is undefined
+    value             = field.value value, details        if field?.value?
+    return { raw_value, value, }
+
+  #---------------------------------------------------------------------------------------------------------
+  _td_from_field_key_value_and_details: ( field, key, value, details ) ->
+    if field?.outer_html?
+      return field.outer_html value, details
+    else if field?.inner_html?
+      return HDML.pair 'td', { class: key, }, field.inner_html value, details
+    value = rpr value unless @types.isa.text value
+    return HDML.pair 'td', { class: key, }, HDML.text value
 
 
