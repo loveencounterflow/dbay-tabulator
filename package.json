@@ -1,6 +1,6 @@
 {
   "name": "dbay-tabulator",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "render tabular data to HTML",
   "main": "lib/main.js",
   "directories": {
