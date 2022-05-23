@@ -77,7 +77,7 @@ class @Tabulator extends Common_mixin()
       R.push HDML.close 'tr'
       return null
     #.......................................................................................................
-    R.push HDML.open 'table', { class: cfg.class, }
+    R.push HDML.open 'table', if cfg.class? then { class: cfg.class, } else null
     #.......................................................................................................
     for row from rows
       row_nr++
