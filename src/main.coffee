@@ -115,7 +115,20 @@ class @Tabulator extends Common_mixin()
     return R.join '\n'
 
   #---------------------------------------------------------------------------------------------------------
-  as_subtable_html: ( cfg ) -> "NOT YET IMPLEMENTED"
+  row_as_subtable_html: ( cfg ) ->
+    cfg = { @defaults.vgt_row_as_subtable_html_cfg..., cfg..., }
+    @types.validate.vgt_row_as_subtable_html_cfg cfg
+    row = if ( @types.isa.object cfg.row ) then cfg.row else JSON.parse cfg.row
+    R   = []
+    R.push HDML.open 'table', if cfg.class? then { class: cfg.class, } else null
+    for k, v of row
+      R.push HDML.open 'tr'
+      R.push HDML.pair 'th', HDML.text k
+      R.push HDML.pair 'td', HDML.text v
+      R.push HDML.close 'tr'
+    R.push HDML.close 'table'
+    return R.join '\n'
+
 
   #---------------------------------------------------------------------------------------------------------
   _get_table_name: ( name ) ->
