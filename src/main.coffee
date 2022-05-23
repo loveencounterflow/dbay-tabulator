@@ -64,6 +64,15 @@ class @Tabulator extends Common_mixin()
     return { raw_value, value, }
 
   #---------------------------------------------------------------------------------------------------------
+  _td_from_field_key_value_and_details: ( field, key, value, details ) ->
+    if field?.outer_html?
+      return field.outer_html value, details
+    else if field?.inner_html?
+      return HDML.pair 'td', { class: key, }, field.inner_html value, details
+    value = rpr value unless @types.isa.text value
+    return HDML.pair 'td', { class: key, }, HDML.text value
+
+  #---------------------------------------------------------------------------------------------------------
   _table_as_html: ( cfg ) ->
     { rows }      = cfg
     fields        = @_fields_from_cfg cfg
@@ -95,26 +104,13 @@ class @Tabulator extends Common_mixin()
       #.....................................................................................................
       R.push HDML.open 'tr'
       for key in keys
-        field       = fields[ key ] ? null
-        continue unless ( title = @_title_from_field_and_key )?
+        field = fields[ key ] ? null
+        continue unless ( title = @_title_from_field_and_key field, key )?
         #...................................................................................................
         details     = { key, row_nr, row, }
         { raw_value
           value }   = @_raw_value_and_value_from_cfg_row_field_and_key cfg, row, field, key, details
-        is_done     = false
-        inner_html  = null
-        if field?
-          if ( as_html = field.outer_html ? null )?
-            is_done = true
-            R.push as_html value, details
-          else if ( as_html = field.inner_html ? null )?
-            inner_html = as_html value, details
-        unless is_done
-          if inner_html?
-            R.push HDML.pair 'td', { class: key, }, inner_html
-          else
-            value = rpr value unless @types.isa.text value
-            R.push HDML.pair 'td', { class: key, }, HDML.text value
+        R.push @_td_from_field_key_value_and_details field, key, value, details
       #.....................................................................................................
       R.push HDML.close 'tr'
     #.......................................................................................................
@@ -139,7 +135,8 @@ class @Tabulator extends Common_mixin()
         value }   = @_raw_value_and_value_from_cfg_row_field_and_key cfg, row, field, key, details
       #.....................................................................................................
       value = row[ key ]
-      R.push HDML.pair 'tr', ( HDML.pair 'th', HDML.text key ) + ( HDML.pair 'td', HDML.text value )
+      td    = @_td_from_field_key_value_and_details field, key, value, details
+      R.push HDML.pair 'tr', ( HDML.pair 'th', HDML.text key ) + td
     R.push HDML.close 'table'
     return R.join '\n'
 
