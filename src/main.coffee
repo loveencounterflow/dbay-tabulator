@@ -59,8 +59,8 @@ class @Tabulator extends Common_mixin()
     raw_value         = row[ key ]
     details.raw_value = raw_value
     value             = raw_value
-    value             = field?.undefined ? cfg.undefined ? 'undefined'  if value is undefined
-    value             = field.value value, details                      if field?.value?
+    value             = field?.undefined ? cfg.undefined  if value is undefined
+    value             = field.value value, details        if field?.value?
     return { raw_value, value, }
 
   #---------------------------------------------------------------------------------------------------------
