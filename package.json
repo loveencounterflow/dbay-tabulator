@@ -1,0 +1,35 @@
+{
+  "name": "dbay-tabulator",
+  "version": "0.0.0",
+  "description": "render tabular data to HTML",
+  "main": "lib/main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loveencounterflow/dbay-tabulator.git"
+  },
+  "keywords": [
+    "dbay",
+    "table",
+    "html",
+    "tabulator",
+    "tabulate"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/loveencounterflow/dbay-tabulator/issues"
+  },
+  "homepage": "https://github.com/loveencounterflow/dbay-tabulator#readme",
+  "dependencies": {
+    "cnd": "^9.2.2",
+    "guy": "^4.2.0",
+    "hdml": "^2.1.0",
+    "intertype": "^7.7.0"
+  }
+}
