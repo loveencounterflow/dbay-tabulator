@@ -69,6 +69,7 @@ GUY                       = require 'guy'
   "@isa.vgt_as_html_keys x.keys":                             ( x ) -> @isa.vgt_as_html_keys x.keys
   "@isa_optional.vgt_fieldset_cfg x.fields":                  ( x ) -> @isa_optional.vgt_fieldset_cfg x.fields
   "@isa_optional.notunset x.undefined":                       ( x ) -> @isa_optional.notunset x.undefined
+  "@isa.unset x.parameters":                                  ( x ) -> @isa.unset x.parameters
   "must give `rows` but not any of table, query, parameters": ( x ) ->
     return false if @isa._vgt_as_html_from_table_cfg x
     return false if @isa._vgt_as_html_from_query_cfg x
