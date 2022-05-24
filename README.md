@@ -74,6 +74,7 @@
   * **[–]** implement nested subtables by providing a method `as_subtable_html()` that should be called from
     `field.inner_html()`
   * **[–]** integrate code from `icql-dba-tabular` for output to command line
+  * **[–]** add `data` property which will be passed in as part of `details` to each call to a formatter
 
 ## Is Done
 
