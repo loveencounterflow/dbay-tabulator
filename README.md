@@ -83,7 +83,6 @@
     with a `mode` or `format` property
   * **[–]** implement `format` property for `summarize` to output a [description
     list](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl) instead of a table
-  * **[–]** consider to replace `display: false` with `hide: true`
   * **[–]** allow formatters of `summarize` tables to return `Symbol.for 'hide'` to achieve conditional
     display
 
@@ -106,6 +105,7 @@
   * **[+]** implement nested subtables by providing a method
     <del>`as_subtable_html()`</del><ins>`summarize()`</ins> that should be called from `field.inner_html()`
   * **[+]** make ordering in `fields` the ordering in display
+  * **[+]** replace `display: false` with `hide: true`
 
 
 
