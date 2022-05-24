@@ -95,14 +95,14 @@ GUY                       = require 'guy'
   "@isa_optional.notunset x.undefined":               ( x ) -> @isa_optional.notunset x.undefined
   "can only have one of x.inner_html, x.outer_html":  ( x ) -> not ( x.inner_html? and x.outer_html? )
   "@isa_optional.text x.title":                       ( x ) -> @isa_optional.text x.title
-  "@isa_optional.boolean x.display":                  ( x ) -> @isa_optional.boolean x.display
+  "@isa.boolean x.hide":                              ( x ) -> @isa.boolean x.hide
 #...........................................................................................................
 @defaults.vgt_field_description_object =
   outer_html:     null
   inner_html:     null
   undefined:      undefined
   title:          null
-  display:        null
+  hide:           false
 
 #-----------------------------------------------------------------------------------------------------------
 @types.declare 'vgt_as_html_keys', tests:

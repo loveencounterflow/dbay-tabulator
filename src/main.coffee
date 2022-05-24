@@ -27,10 +27,10 @@ class @Tabulator extends Common_mixin()
 
   #---------------------------------------------------------------------------------------------------------
   tabulate: ( cfg ) =>
-    cfg       = { @defaults.vgt_as_html_cfg..., cfg..., }
+    cfg       = @_add_field_defaults { @defaults.vgt_as_html_cfg..., cfg..., }
     @types.validate.vgt_as_html_cfg cfg
-    { rows }  = cfg
-    fields    = @_fields_from_cfg cfg
+    { fields,
+      rows }  = cfg
     keys      = null
     R         = []
     row_nr    = 0
@@ -43,7 +43,7 @@ class @Tabulator extends Common_mixin()
       R.push HDML.open 'tr'
       for key in keys
         if ( field = fields[ key ] )?
-          continue if field.display is false
+          continue if field.hide
           title = field.title ? key
         else
           title = key
@@ -74,12 +74,12 @@ class @Tabulator extends Common_mixin()
 
   #---------------------------------------------------------------------------------------------------------
   summarize: ( cfg ) =>
-    cfg     = { @defaults.vgt_row_as_subtable_html_cfg..., cfg..., }
+    cfg        = @_add_field_defaults { @defaults.vgt_row_as_subtable_html_cfg..., cfg..., }
     @types.validate.vgt_row_as_subtable_html_cfg cfg
-    row     = if ( @types.isa.object cfg.row ) then cfg.row else JSON.parse cfg.row
-    fields  = @_fields_from_cfg cfg
-    keys    = @_keys_from_keys_row_and_fields cfg.keys, row, fields
-    R       = []
+    row        = if ( @types.isa.object cfg.row ) then cfg.row else JSON.parse cfg.row
+    { fields } = cfg
+    keys       = @_keys_from_keys_row_and_fields cfg.keys, row, fields
+    R          = []
     R.push HDML.open 'table', if cfg.class? then { class: cfg.class, } else null
     for key in keys
       field       = fields[ key ]
@@ -94,12 +94,14 @@ class @Tabulator extends Common_mixin()
     return R.join '\n'
 
   #---------------------------------------------------------------------------------------------------------
-  _fields_from_cfg: ( cfg ) ->
-    R = { cfg.fields..., }
-    for key, value of R
-      value     = {} if value is true
-      R[ key ]  = { @defaults.vgt_field_description_object..., value..., }
-    return R
+  _add_field_defaults: ( cfg ) ->
+    fields = { cfg.fields..., }
+    for key, value of fields
+      value         = {} if value is true
+      fields[ key ] = { @defaults.vgt_field_description_object..., value..., }
+      debug '^32243-1^', key, fields[ key ]
+    cfg.fields = fields
+    return cfg
 
   #---------------------------------------------------------------------------------------------------------
   _keys_from_keys_row_and_fields: ( keys, row, fields ) ->
@@ -112,7 +114,7 @@ class @Tabulator extends Common_mixin()
   #---------------------------------------------------------------------------------------------------------
   _title_from_field_and_key: ( field, key ) ->
     if field?
-      return null if field.display is false
+      return null if field.hide
       return field.title ? key
     return key
 
