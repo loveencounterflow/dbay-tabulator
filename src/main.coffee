@@ -62,9 +62,9 @@ class @Tabulator extends Common_mixin()
         field = fields[ key ] ? null
         continue unless ( title = @_title_from_field_and_key field, key )?
         #...................................................................................................
-        details     = { key, row_nr, row, field, }
-        details     = @_set_value cfg, row, field, key, details
-        R.push @_td_from_details details
+        d     = { key, row_nr, row, field, }
+        d     = @_set_value cfg, row, field, key, d
+        R.push @_td_from_details d
       #.....................................................................................................
       R.push HDML.close 'tr'
     #.......................................................................................................
@@ -84,12 +84,11 @@ class @Tabulator extends Common_mixin()
     for key in keys
       field       = fields[ key ]
       continue unless ( title = @_title_from_field_and_key field, key )?
-      details     = { key, row, field, }
-      details     = @_set_value cfg, row, field, key, details
-      debug '^35345^', details
+      d     = { key, row, field, }
+      d     = @_set_value cfg, row, field, key, d
       #.....................................................................................................
       value = row[ key ]
-      td    = @_td_from_details details
+      td    = @_td_from_details d
       R.push HDML.pair 'tr', ( HDML.pair 'th', HDML.text title ) + td
     R.push HDML.close 'table'
     return R.join '\n'
@@ -118,20 +117,20 @@ class @Tabulator extends Common_mixin()
     return key
 
   #---------------------------------------------------------------------------------------------------------
-  _set_value: ( cfg, row, field, key, details ) ->
-    details.raw_value = row[ key ]
-    details.value     = details.raw_value
-    details.value     = field?.undefined ? cfg.undefined  if details.value is undefined
-    return details
+  _set_value: ( cfg, row, field, key, d ) ->
+    d.raw_value = row[ key ]
+    d.value     = d.raw_value
+    d.value     = field?.undefined ? cfg.undefined  if d.value is undefined
+    return d
 
   #---------------------------------------------------------------------------------------------------------
-  _td_from_details: ( details ) ->
-    if details.field?.outer_html?
-      return details.field.outer_html details.value, details
-    else if details.field?.inner_html?
-      return HDML.pair 'td', { class: details.key, }, details.field.inner_html details.value, details
-    details.value = rpr details.value unless @types.isa.text details.value
-    return HDML.pair 'td', { class: details.key, }, HDML.text details.value
+  _td_from_details: ( d ) ->
+    if d.field?.outer_html?
+      return d.field.outer_html d.value, d
+    else if d.field?.inner_html?
+      return HDML.pair 'td', { class: d.key, }, d.field.inner_html d.value, d
+    d.value = rpr d.value unless @types.isa.text d.value
+    return HDML.pair 'td', { class: d.key, }, HDML.text d.value
 
 
 ############################################################################################################
