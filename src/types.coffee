@@ -89,7 +89,7 @@ GUY                       = require 'guy'
 #-----------------------------------------------------------------------------------------------------------
 @types.declare 'vgt_field_description_object', tests:
   "@isa.object x":                                    ( x ) -> @isa.object x
-  "@isa_optional.function x.value":                   ( x ) -> @isa_optional.function x.value
+  "@isa.unset x.value":                               ( x ) -> @isa.unset x.value
   "@isa_optional.function x.outer_html":              ( x ) -> @isa_optional.function x.outer_html
   "@isa_optional.function x.inner_html":              ( x ) -> @isa_optional.function x.inner_html
   "@isa_optional.notunset x.undefined":               ( x ) -> @isa_optional.notunset x.undefined
@@ -98,7 +98,6 @@ GUY                       = require 'guy'
   "@isa_optional.boolean x.display":                  ( x ) -> @isa_optional.boolean x.display
 #...........................................................................................................
 @defaults.vgt_field_description_object =
-  value:         null
   outer_html:     null
   inner_html:     null
   undefined:      undefined
