@@ -62,10 +62,9 @@ class @Tabulator extends Common_mixin()
         field = fields[ key ] ? null
         continue unless ( title = @_title_from_field_and_key field, key )?
         #...................................................................................................
-        details     = { key, row_nr, row, }
-        { raw_value
-          value }   = @_raw_value_and_value_from_cfg_row_field_and_key cfg, row, field, key, details
-        R.push @_td_from_field_key_value_and_details field, key, value, details
+        details     = { key, row_nr, row, field, }
+        details     = @_set_value cfg, row, field, key, details
+        R.push @_td_from_details details
       #.....................................................................................................
       R.push HDML.close 'tr'
     #.......................................................................................................
@@ -83,15 +82,15 @@ class @Tabulator extends Common_mixin()
     R       = []
     R.push HDML.open 'table', if cfg.class? then { class: cfg.class, } else null
     for key in keys
-      field = fields[ key ]
+      field       = fields[ key ]
       continue unless ( title = @_title_from_field_and_key field, key )?
-      details     = { key, row, }
-      { raw_value
-        value }   = @_raw_value_and_value_from_cfg_row_field_and_key cfg, row, field, key, details
+      details     = { key, row, field, }
+      details     = @_set_value cfg, row, field, key, details
+      debug '^35345^', details
       #.....................................................................................................
       value = row[ key ]
-      td    = @_td_from_field_key_value_and_details field, key, value, details
-      R.push HDML.pair 'tr', ( HDML.pair 'th', HDML.text key ) + td
+      td    = @_td_from_details details
+      R.push HDML.pair 'tr', ( HDML.pair 'th', HDML.text title ) + td
     R.push HDML.close 'table'
     return R.join '\n'
 
@@ -119,22 +118,20 @@ class @Tabulator extends Common_mixin()
     return key
 
   #---------------------------------------------------------------------------------------------------------
-  _raw_value_and_value_from_cfg_row_field_and_key: ( cfg, row, field, key, details ) ->
-    raw_value         = row[ key ]
-    details.raw_value = raw_value
-    value             = raw_value
-    value             = field?.undefined ? cfg.undefined  if value is undefined
-    value             = field.value value, details        if field?.value?
-    return { raw_value, value, }
+  _set_value: ( cfg, row, field, key, details ) ->
+    details.raw_value = row[ key ]
+    details.value     = details.raw_value
+    details.value     = field?.undefined ? cfg.undefined  if details.value is undefined
+    return details
 
   #---------------------------------------------------------------------------------------------------------
-  _td_from_field_key_value_and_details: ( field, key, value, details ) ->
-    if field?.outer_html?
-      return field.outer_html value, details
-    else if field?.inner_html?
-      return HDML.pair 'td', { class: key, }, field.inner_html value, details
-    value = rpr value unless @types.isa.text value
-    return HDML.pair 'td', { class: key, }, HDML.text value
+  _td_from_details: ( details ) ->
+    if details.field?.outer_html?
+      return details.field.outer_html details.value, details
+    else if details.field?.inner_html?
+      return HDML.pair 'td', { class: details.key, }, details.field.inner_html details.value, details
+    details.value = rpr details.value unless @types.isa.text details.value
+    return HDML.pair 'td', { class: details.key, }, HDML.text details.value
 
 
 ############################################################################################################
