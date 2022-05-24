@@ -50,6 +50,8 @@
   representation of a table where table headers are in first column, followed by (formatted) values in
   second column. `summarize()` can be called from inside an `inner_html()` method to render JSON content as
   nested table.
+  * field formatters (`inner_html()`, `outer_html()`) passed to `summarize()` may return `Symbol.for 'hide'`
+    to indicate the present row is to be skipped
 
 * Configuration options may be modified in the future to make it simpler to add ID, CSS class,
   `data-` and other attributes to the enclosing element without having to touch the value or to generate the
@@ -83,8 +85,6 @@
     with a `mode` or `format` property
   * **[–]** implement `format` property for `summarize` to output a [description
     list](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl) instead of a table
-  * **[–]** allow formatters of `summarize` tables to return `Symbol.for 'hide'` to achieve conditional
-    display
 
 
 ## Is Done
@@ -106,6 +106,7 @@
     <del>`as_subtable_html()`</del><ins>`summarize()`</ins> that should be called from `field.inner_html()`
   * **[+]** make ordering in `fields` the ordering in display
   * **[+]** replace `display: false` with `hide: true`
+  * **[+]** implement hiding rows in summary tables with `Symbol.for 'hide'`
 
 
 
