@@ -137,3 +137,5 @@ class @Tabulator extends Common_mixin()
     return HDML.pair 'td', { class: key, }, HDML.text value
 
 
+############################################################################################################
+@TABULATOR = new @Tabulator()
