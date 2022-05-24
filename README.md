@@ -79,7 +79,6 @@
   * **[–]** implement `error` property for table, field descriptions which will be a function to be called
     in case an error should occur
   * **[–]** API change: formatters should always only get a details object `d` with `value`, `raw_value` &c
-  * **[–]** API change: remove formatter `value`, use `inner_html` instead
 
 ## Is Done
 
@@ -87,3 +86,4 @@
   * **[+]** implement `inner_html`
   * **[+]** `html` -> `outer_html`
   * **[+]** `format` -> `value`
+  * **[+]** API change: remove formatter `value`, use `inner_html` instead
