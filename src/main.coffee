@@ -26,7 +26,7 @@ GUY                       = require 'guy'
 class @Tabulator extends Common_mixin()
 
   #---------------------------------------------------------------------------------------------------------
-  as_html: ( cfg ) ->
+  tabulate: ( cfg ) =>
     cfg       = { @defaults.vgt_as_html_cfg..., cfg..., }
     @types.validate.vgt_as_html_cfg cfg
     { rows }  = cfg
@@ -73,7 +73,7 @@ class @Tabulator extends Common_mixin()
     return R.join '\n'
 
   #---------------------------------------------------------------------------------------------------------
-  row_as_subtable_html: ( cfg ) ->
+  summarize: ( cfg ) =>
     cfg     = { @defaults.vgt_row_as_subtable_html_cfg..., cfg..., }
     @types.validate.vgt_row_as_subtable_html_cfg cfg
     row     = if ( @types.isa.object cfg.row ) then cfg.row else JSON.parse cfg.row
@@ -126,12 +126,14 @@ class @Tabulator extends Common_mixin()
   #---------------------------------------------------------------------------------------------------------
   _td_from_details: ( d ) ->
     if d.field?.outer_html?
-      return d.field.outer_html d.value, d
+      return d.field.outer_html d
     else if d.field?.inner_html?
-      return HDML.pair 'td', { class: d.key, }, d.field.inner_html d.value, d
+      return HDML.pair 'td', { class: d.key, }, d.field.inner_html d
     d.value = rpr d.value unless @types.isa.text d.value
     return HDML.pair 'td', { class: d.key, }, HDML.text d.value
 
 
 ############################################################################################################
-@TABULATOR = new @Tabulator()
+@TABULATOR  = new @Tabulator()
+@tabulate   = @TABULATOR.tabulate
+@summarize  = @TABULATOR.summarize
