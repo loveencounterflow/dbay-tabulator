@@ -19,7 +19,7 @@ GUY                       = require 'guy'
 { SQL }                   = GUY.str
 { HDML }                  = require 'hdml'
 { Common_mixin }          = require './common-mixin'
-
+hide_sym                  = Symbol.for 'hide'
 
 
 #===========================================================================================================
@@ -64,7 +64,10 @@ class @Tabulator extends Common_mixin()
         #...................................................................................................
         d     = { key, row_nr, row, field, }
         d     = @_set_value cfg, row, field, key, d
-        R.push @_td_from_details d
+        td    = @_td_from_details d
+        if td is hide_sym
+          throw new Error "^dbay-tabulator@1^ `Symbol.for 'hide'` only allowed with `summarize()`"
+        R.push td
       #.....................................................................................................
       R.push HDML.close 'tr'
     #.......................................................................................................
@@ -89,6 +92,7 @@ class @Tabulator extends Common_mixin()
       #.....................................................................................................
       value = row[ key ]
       td    = @_td_from_details d
+      continue if td is hide_sym
       R.push HDML.pair 'tr', ( HDML.pair 'th', HDML.text title ) + td
     R.push HDML.close 'table'
     return R.join '\n'
@@ -99,7 +103,6 @@ class @Tabulator extends Common_mixin()
     for key, value of fields
       value         = {} if value is true
       fields[ key ] = { @defaults.vgt_field_description_object..., value..., }
-      debug '^32243-1^', key, fields[ key ]
     cfg.fields = fields
     return cfg
 
@@ -130,7 +133,9 @@ class @Tabulator extends Common_mixin()
     if d.field?.outer_html?
       return d.field.outer_html d
     else if d.field?.inner_html?
-      return HDML.pair 'td', { class: d.key, }, d.field.inner_html d
+      value = d.field.inner_html d
+      return value if value is hide_sym
+      return HDML.pair 'td', { class: d.key, }, value
     d.value = rpr d.value unless @types.isa.text d.value
     return HDML.pair 'td', { class: d.key, }, HDML.text d.value
 
