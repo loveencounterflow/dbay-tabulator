@@ -29,18 +29,19 @@
   not present in the data, or to clarify the ordering of fields in the table).
 * if `fields[ key ]` is an object:
   * `optional.text x.title`: when given, defines the text to be used in the table header
-  * `optional.function x.value`: when given, must be function that accepts a value (and optionally a
-    field description object) and returns another. Returned value will be stringified with
-    `node:util.inspect()` unless it already is a string.
-  * `optional.function x.outer_html`: when given, must be a function that accepts a value (and
-    optionally a field description object) and returns an HTML representation of it *including the
-    containing `<td>` element*
-  * `optional.function x.inner_html`: when given, must be a function that accepts a value (and
-    optionally a field description object) and returns an HTML representation of it *including the
-    containing `<td>` element*
-  * `optional.function x.attrs`: when given, must be a function that accepts a value (and
-    optionally a field description object) and returns an object that will be used for
-    the attributes of the enclosing (`<td>`) element
+  * fomatters:
+    * `optional.function x.value`: when given, must be function that accepts a value (and optionally a
+      field description object) and returns another. Returned value will be stringified with
+      `node:util.inspect()` unless it already is a string.
+    * `optional.function x.outer_html`: when given, must be a function that accepts a value (and
+      optionally a field description object) and returns an HTML representation of it *including the
+      containing `<td>` element*
+    * `optional.function x.inner_html`: when given, must be a function that accepts a value (and
+      optionally a field description object) and returns an HTML representation of it *including the
+      containing `<td>` element*
+  * **not implemented** <del>`optional.function x.attrs`: when given, must be a function that accepts a
+    value (and optionally a field description object) and returns an object that will be used for the
+    attributes of the enclosing (`<td>`) element</del>
   * `optional.boolean x.display`: if set to `false`, inhibits column from being displayed and any of
     `value()`, `outer_html()`, `inner_html()` to be called
 
@@ -75,6 +76,10 @@
     `field.inner_html()`
   * **[–]** integrate code from `icql-dba-tabular` for output to command line
   * **[–]** add `data` property which will be passed in as part of `details` to each call to a formatter
+  * **[–]** implement `error` property for table, field descriptions which will be a function to be called
+    in case an error should occur
+  * **[–]** API change: formatters should always only get a details object `d` with `value`, `raw_value` &c
+  * **[–]** API change: remove formatter `value`, use `inner_html` instead
 
 ## Is Done
 
