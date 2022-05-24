@@ -68,6 +68,8 @@
   * `x.keys: 'row,cfg'`: both, from `row` first
   * `x.keys: 'cfg,row'`: both, from `cfg` first
 
+* in formatters, one can conveniently refer to the value (and other elements of the description) using
+  destructuring syntax, as in `inner_html: ({ value: href }) => ...`
 
 ## To Do
 
@@ -81,6 +83,9 @@
     with a `mode` or `format` property
   * **[–]** implement `format` property for `summarize` to output a [description
     list](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl) instead of a table
+  * **[–]** consider to replace `display: false` with `hide: true`
+  * **[–]** allow formatters of `summarize` tables to return `Symbol.for 'hide'` to achieve conditional
+    display
 
 
 ## Is Done
