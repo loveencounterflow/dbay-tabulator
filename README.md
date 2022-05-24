@@ -22,7 +22,9 @@
 
 * `{ Tabulator } = require 'dbay-tabulator'`
 * `tabulator = new Tabulator()`
-* `tabulator.as_html: ( cfg ) ->`: returns a string with data rendered according to the settings `cfg`
+* or use `{ TABULATOR } = require 'dbay-tabulator'`
+* or use `{ tabulate, summarize, } = require 'dbay-tabulator'`
+* `tabulator.tabulate: ( cfg ) ->`: returns a string with data rendered according to the settings `cfg`
 * Data is passed in as the `rows` property; this can be a list of or an iterator over objects.
 * Optionally, individual fields may be formatted using the `fields` property, which should be and object
   whose keys are field names and whose values are either `true` (to indicate, 'include this field' even if
@@ -33,17 +35,21 @@
     * `optional.function x.value`: when given, must be function that accepts a value (and optionally a
       field description object) and returns another. Returned value will be stringified with
       `node:util.inspect()` unless it already is a string.
-    * `optional.function x.outer_html`: when given, must be a function that accepts a value (and
-      optionally a field description object) and returns an HTML representation of it *including the
-      containing `<td>` element*
-    * `optional.function x.inner_html`: when given, must be a function that accepts a value (and
-      optionally a field description object) and returns an HTML representation of it *including the
-      containing `<td>` element*
+    * `optional.function x.outer_html`: when given, must be a function that accepts a description `d` and
+      returns an HTML representation of it *including the containing `<td>` element*
+    * `optional.function x.inner_html`: when given, must be a function that accepts a description `d` and
+      returns an HTML representation of it *excluding the containing `<td>` element*
   * **not implemented** <del>`optional.function x.attrs`: when given, must be a function that accepts a
     value (and optionally a field description object) and returns an object that will be used for the
     attributes of the enclosing (`<td>`) element</del>
   * `optional.boolean x.display`: if set to `false`, inhibits column from being displayed and any of
     `value()`, `outer_html()`, `inner_html()` to be called
+
+* `tabulator.summarize: ( cfg ) ->`: much like `tabulate()`, but accepts a single row value `row` (*not*
+  `rows`) that should either be an object with key, value pairs or a JSON string with the same. Returns HTML
+  representation of a table where table headers are in first column, followed by (formatted) values in
+  second column. `summarize()` can be called from inside an `inner_html()` method to render JSON content as
+  nested table.
 
 * Configuration options may be modified in the future to make it simpler to add ID, CSS class,
   `data-` and other attributes to the enclosing element without having to touch the value or to generate the
@@ -65,20 +71,17 @@
 
 ## To Do
 
-  * **[–]** implement `rows` so anything iterable may be passed in
   * **[–]** allow prefix for CSS classes
   * **[–]** allow to set CSS class like title (or use `attrs`?)
-  * **[–]** correct way to add field to table should be to add it to `fields`, not to hijack existing column
-  * **[–]** allow to specify whether column names in `fields` is inlcusive or exclusive, i.e. whether they leave
-    unmentioned ones in place or cause them to be hidden
-  * **[–]** make ordering in `fields` the ordering in display
-  * **[–]** implement nested subtables by providing a method `as_subtable_html()` that should be called from
-    `field.inner_html()`
   * **[–]** integrate code from `icql-dba-tabular` for output to command line
   * **[–]** add `data` property which will be passed in as part of `details` to each call to a formatter
   * **[–]** implement `error` property for table, field descriptions which will be a function to be called
     in case an error should occur
-  * **[–]** API change: formatters should always only get a details object `d` with `value`, `raw_value` &c
+  * **[–]** consider to implement `{ tabulate   } = ( require 'dbay-tabulator' ).ansi`; could also be done
+    with a `mode` or `format` property
+  * **[–]** implement `format` property for `summarize` to output a [description
+    list](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl) instead of a table
+
 
 ## Is Done
 
@@ -87,3 +90,17 @@
   * **[+]** `html` -> `outer_html`
   * **[+]** `format` -> `value`
   * **[+]** API change: remove formatter `value`, use `inner_html` instead
+  * **[+]** API change: formatters should always only get a details object `d` with `value`, `raw_value` &c
+  * **[+]** change API:
+    * `{ tabulate   } = require 'dbay-tabulator'` for ordinary tables
+    * `{ enumerate  } = require 'dbay-tabulator'` for vertical tables
+  * **[+]** implement `rows` so anything iterable may be passed in
+  * **[+]** correct way to add field to table should be to add it to `fields`, not to hijack existing column
+  * **[+]** allow to specify whether column names in `fields` is inlcusive or exclusive, i.e. whether they
+    leave unmentioned ones in place or cause them to be hidden
+  * **[+]** implement nested subtables by providing a method
+    <del>`as_subtable_html()`</del><ins>`summarize()`</ins> that should be called from `field.inner_html()`
+  * **[+]** make ordering in `fields` the ordering in display
+
+
+
