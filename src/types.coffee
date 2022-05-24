@@ -41,6 +41,12 @@ GUY                       = require 'guy'
   "@isa_optional.object x.parameters":  ( x ) -> @isa_optional.object x.parameters
   "@isa.unset x.table":                 ( x ) -> @isa.unset x.table
   "@isa.unset x.rows":                  ( x ) -> @isa.unset x.rows
+#-----------------------------------------------------------------------------------------------------------
+### thx to https://stackoverflow.com/a/32538867/7568091 ###
+@types.declare 'vgt_iterable_no_text', tests:
+  "not @isa.text x":                                                  ( x ) -> not @isa.text x
+  "( @isa.list x ) or ( x? and @isa.function x[ Symbol.iterator ] )": ( x ) ->
+    return ( @isa.list x ) or ( x? and @isa.function x[ Symbol.iterator ] )
 
 #-----------------------------------------------------------------------------------------------------------
 @types.declare '_vgt_as_html_from_rows_cfg', tests:
@@ -48,6 +54,7 @@ GUY                       = require 'guy'
   "@isa.unset x.parameters":            ( x ) -> @isa.unset x.parameters
   "@isa.unset x.query":                 ( x ) -> @isa.unset x.query
   "@isa.unset x.table":                 ( x ) -> @isa.unset x.table
+  "@isa.vgt_iterable_no_text x.rows":           ( x ) -> @isa.list x.rows
 
 #-----------------------------------------------------------------------------------------------------------
 @types.declare '_vgt_row_as_subtable_html_from_row_cfg', tests:
