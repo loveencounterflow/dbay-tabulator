@@ -85,6 +85,8 @@
     with a `mode` or `format` property
   * **[–]** implement `format` property for `summarize` to output a [description
     list](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl) instead of a table
+  * **[–]** add `cfg` property to decide whether original ordering or ordering from table configuration or
+    some other order should be used for columns
 
 
 ## Is Done
